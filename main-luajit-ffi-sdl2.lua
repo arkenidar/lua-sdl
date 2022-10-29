@@ -44,7 +44,7 @@ function next_map()
 end
 
 function load()
-  tile_size=32
+  tile_size=32*2
 
 	local player=image_load("assets/P.bmp")
   local space=image_load("assets/-.bmp")
@@ -66,7 +66,7 @@ function image_draw(image,xywh)
   rect.w = xywh[3]
   rect.h = xywh[4]
   
-  sdl.upperBlit(image, nil, windowsurface, rect)
+  sdl.upperBlitScaled(image, nil, windowsurface, rect)
 end
 
 function draw()
