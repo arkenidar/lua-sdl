@@ -70,6 +70,7 @@ function image_draw(image,xywh)
 end
 
 function draw()
+  sdl.fillRect(windowsurface, nil, 0)
   for y=1,#grid do
     for x=1,#grid[1] do
       local tile_type=grid[y][x]
