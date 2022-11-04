@@ -105,6 +105,7 @@ while running do
     return point_in_rectangle(mouse_position,xywh)
   end
   
+  --********************************************
   --update
   
   -- sizes and positions
@@ -117,9 +118,14 @@ while running do
     show = not show
   end
 
+  --********************************************
   -- draw
   
   local draw = {}
+  
+  function draw.background(draw)
+    draw.ops.rectangle({0,0,255}, nil)
+  end
   
   function draw.object1(draw)
     if show then
@@ -129,6 +135,8 @@ while running do
     end
   end
 
+  --********************************************
+  
   -- utility
   function rect_from_xywh(xywh)
     if xywh == nil then return nil end
@@ -189,7 +197,7 @@ while running do
   --************************************************
   
   -- clear (draw begin)
-  draw.ops.rectangle({0,0,255}, nil)
+  draw:background()
   
   -- complex/composite draw
   draw:object1()
