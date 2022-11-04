@@ -35,11 +35,20 @@ sdl.setColorKey(image_surface, sdl.TRUE, key)
 
 ---local image_texture = sdl.createTextureFromSurface(renderer, image_surface)
 
---[[
-ffi.load("SDL2_image", true) -- libsdl2-image-dev -- /usr/lib/x86_64-linux-gnu/libSDL2_image.so
-ffi.cdef('SDL_Texture * IMG_LoadTexture(SDL_Renderer *renderer, const char *file);')
-local image_texture = C.IMG_LoadTexture(renderer, "transparence.png") -- "assets/P.bmp"
---]]
+local image_texture
+if renderer then
+  ffi.load("SDL2_image", true) -- libsdl2-image-dev -- /usr/lib/x86_64-linux-gnu/libSDL2_image.so
+  ffi.cdef([[ SDL_Texture * IMG_LoadTexture(SDL_Renderer *renderer, const char *file); ]])
+  -- this can load optionally semi-transparent PNGs as textures
+  image_texture = C.IMG_LoadTexture(renderer, "transparence.png") -- "assets/P.bmp"
+end
+
+local image
+if renderer then
+  image = image_texture
+else
+  image = image_surface
+end
 
 -- initial game state
 local show = true
@@ -127,6 +136,14 @@ while running do
     sdl.renderCopy(renderer, image_texture, nil, rect_from_xywh(xywh))
   end
   
+  function draw_image(image_texture, xywh)
+    if renderer then
+      draw_image_texture(image_texture, xywh)
+    else
+      draw_image_surface(image_surface, xywh)
+    end
+  end
+  
   -- utility
   function draw_rect_surface(rgb, xywh)
     sdl.fillRect(window_surface, rect_from_xywh(xywh), sdl.mapRGB(window_surface.format,rgb[1],rgb[2],rgb[3]))
@@ -135,19 +152,37 @@ while running do
     sdl.setRenderDrawColor(renderer,rgb[1],rgb[2],rgb[3],255)
     sdl.renderFillRect(renderer, rect_from_xywh(xywh))
   end
+  
+  function draw_rect(rgb, xywh)
+    if renderer then
+      draw_rect_renderer(rgb, xywh)
+    else
+      draw_rect_surface(rgb, xywh)
+    end
+  end
+  
+  -- utility
+  function present()
+    if renderer then
+      sdl.renderPresent(renderer)
+    else
+      sdl.updateWindowSurface(window)
+    end
+  end
 
+  --************************************************
+  
   -- clear (draw begin)
-  draw_rect_surface({0,0,255}, nil)
+  draw_rect({0,0,255}, nil)
   
   -- draw
   if show then
-    draw_image_surface(image_surface, xywh)
+    draw_image(image, xywh)
   else
-    draw_rect_surface({255,255,0}, xywh)
+    draw_rect({255,255,0}, xywh)
   end
 
   -- present (draw end)
-  sdl.updateWindowSurface(window)
-  ---sdl.renderPresent(renderer)
+  present()
 
 end
