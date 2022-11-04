@@ -117,6 +117,18 @@ while running do
     show = not show
   end
 
+  -- draw
+  
+  local draw = {}
+  
+  function draw.object1(draw)
+    if show then
+      draw.ops.image(image, xywh)
+    else
+      draw.ops.rectangle({255,255,0}, xywh)
+    end
+  end
+
   -- utility
   function rect_from_xywh(xywh)
     if xywh == nil then return nil end
@@ -170,18 +182,18 @@ while running do
     end
   end
 
+  draw.ops = {
+    image = draw_image,
+    rectangle = draw_rect,
+  }
   --************************************************
   
   -- clear (draw begin)
-  draw_rect({0,0,255}, nil)
+  draw.ops.rectangle({0,0,255}, nil)
   
-  -- draw
-  if show then
-    draw_image(image, xywh)
-  else
-    draw_rect({255,255,0}, xywh)
-  end
-
+  -- complex/composite draw
+  draw:object1()
+  
   -- present (draw end)
   present()
 
