@@ -105,33 +105,40 @@ while running do
     return point_in_rectangle(mouse_position,xywh)
   end
   
-  --********************************************
-  --update
-  
-  -- sizes and positions
-  local w, h = window_surface.w/2, window_surface.h/2
-  local xywh = {w, h, w/2, h/2}
- 
-  -- if clicked
-  if mouse_inside(xywh) and mouse_just_down then
-    -- then alternate/toggle
-    show = not show
+  -- utility
+  function tapped(xywh)
+    return mouse_inside(xywh) and mouse_just_down
   end
-
-  --********************************************
-  -- draw
+  
+  -- initializations
+  
+  local w, h = window_surface.w, window_surface.h
   
   local draw = {}
   
+  -- colors
+  local yellow = {255,255,0}
+  local blue = {0,0,255}
+  
+  --*(update)*******************************************
+  
+  local xywh = {w/2, h/2, w/4, h/4}
+ 
+  if tapped(xywh) then -- if clicked
+    show = not show -- then alternate/toggle
+  end
+
+  --*(draw)*******************************************
+  
   function draw.background(draw)
-    draw.ops.rectangle({0,0,255}, nil)
+    draw.ops.rectangle(blue, nil) -- blue background
   end
   
-  function draw.object1(draw)
-    if show then
-      draw.ops.image(image, xywh)
+  function draw.main(draw)
+    if show then -- alternate/toggle
+      draw.ops.image(image, xywh) -- draw image
     else
-      draw.ops.rectangle({255,255,0}, xywh)
+      draw.ops.rectangle(yellow, xywh) -- draw rectangle
     end
   end
 
@@ -199,8 +206,8 @@ while running do
   -- clear (draw begin)
   draw:background()
   
-  -- complex/composite draw
-  draw:object1()
+  -- complex/composite draw (main object)
+  draw:main()
   
   -- present (draw end)
   present()
