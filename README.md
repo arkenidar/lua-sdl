@@ -3,7 +3,7 @@ raw SDL API use (btw SDL2), not more sophisticated SDL-based like Love2D API (Lu
 
 This repository collects useful pieces of software code in theme.
 
-LUA-ROCKS OPTION: Using FFI (currently LuaJIT only)
+NON-LUA-ROCKS OPTION: Using FFI (currently LuaJIT only)
 
 https://github.com/arkenidar/lua-sdl2-ffi-luajit
 
